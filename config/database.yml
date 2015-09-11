@@ -2,7 +2,7 @@
 development:
   adapter: postgresql
   encoding: unicode
-  database: <app-name>_development
+  database: pokemon_factory_development
   pool: 5
   username:
   password:
@@ -11,7 +11,7 @@ development:
 test:
   adapter: postgresql
   encoding: unicode
-  database: <app-name>_test
+  database: pokemon_factory_test
   pool: 5
   username:
   password:

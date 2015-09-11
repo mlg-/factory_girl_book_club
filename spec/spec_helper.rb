@@ -2,8 +2,10 @@ require 'pry'
 require 'rspec'
 require 'capybara/rspec'
 require 'database_cleaner'
+require 'factory_girl'
 
 require_relative '../app.rb'
+require_relative 'support/factories'
 
 set :environment, :test
 
