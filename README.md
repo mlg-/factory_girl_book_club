@@ -61,7 +61,7 @@ You are now ready to write up your factories inside of this block!
 
 ###Writing a Simple Factory ([Documentation](http://www.rubydoc.info/gems/factory_girl/file/GETTING_STARTED.md#Defining_factories))
 
-If we're using a Book Club example, we'll have `Book Club` objects and `Member` objects. Let's write a migration to set these tables up in our database:
+If we're using a Book Club example, we'll have `Book Club` objects and `Member` objects. Let's set these tables up in our database and write their associated models:
 
 ```
 rake db:create_migration NAME=create_book_clubs
@@ -75,6 +75,10 @@ class CreateBookClubs < ActiveRecord::Migration
   end
 end
 
+class BookClub < ActiveRecord::Base
+  has_many :members
+end
+
 rake db:create_migration NAME=create_members
 
 class CreateMembers < ActiveRecord::Migration
@@ -85,12 +89,15 @@ class CreateMembers < ActiveRecord::Migration
       t.string :email, null: false
       t.text :bio
       t.string :favorite_book
-      t.integer :book_club_id
+      t.belongs_to :book_club
       t.boolean :leader, null: false, default: false
     end
   end
 end
 
+class Member < ActiveRecord::Base
+  belongs_to :book_club
+end
 ```
 
 Let's start with our `Member object`. Here's what creating a factory for that object would look like:
@@ -115,10 +122,11 @@ Let's look at an example of how I would use this.
 feature 'book club member directory' do
   scenario "view list of all book club members" do
     emily_dickinson = FactoryGirl.create(:member)
+
     visit '/members'
 
     expect(page).to have_content("All Book Club Members")
-    expect(page).to have_content emily_dickinson.name
+    expect(page).to have_content emily_dickinson.first_name
     expect(page).to have_content emily_dickinson.email
   end
 end
