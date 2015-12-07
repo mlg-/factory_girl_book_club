@@ -100,7 +100,7 @@ class Member < ActiveRecord::Base
 end
 ```
 
-Let's start with our `Member object`. Here's what creating a factory for that object would look like:
+Let's start with our `Member` object. Here's what creating a factory for that object would look like:
 
 ```ruby
 factory :member do
