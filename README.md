@@ -134,17 +134,30 @@ end
 
 ####Using Factories with Custom info
 
-This is all well and good, but our book clubs have leaders, too. The default member factory we created is not one, and we probably want to have a different test to make sure any given book club's leader(s) are displayed appropriately on the page. Let's try that out:
+But what if we want to customize some part of the Factory Girl created object? Let's try that out:
 
 ```
-walt_whitman = FactoryGirl.create(:member, first_name: "Walt", last_name: "Whitman", bio: "Yawp", leader: true)
+feature "book club member directory" do
+  scenario "view list of all book club members" do
+    emily_dickinson = FactoryGirl.create(:member)
+    walt_whitman = FactoryGirl.create(:member,first_name: "Walt", last_name: "Whitman", bio: "Yawp")
+
+    visit '/members'
+
+    expect(page).to have_content("All Book Club Members")
+    expect(page).to have_content(emily_dickinson.first_name)
+    expect(page).to have_content(emily_dickinson.email)
+    expect(page).to have_content(walt_whitman.first_name)
+    expect(page).to have_content(walt_whitman.email)
+  end
+end
 ```
 
-You can override any of the attributes that your factory sets by passing in an argument to modify that attribute. In this example, we're changing the first name, last name, bio, and leader status of the factory to suit our needs. This lets us still avoid duplicating some of our work in mocking up the data needed to test things that book club members can do, but with custom values when needed.
+You can override any of the attributes that your factory sets by passing in an argument to modify that attribute. In this example, we're changing the first name, last name, and bio of the factory to suit our needs. This lets us still avoid duplicating some of our work in mocking up the data needed to test things that book club members can do, but with custom values when needed.
 
 ###Different Kinds of Objects (aka [Inheritance](http://www.rubydoc.info/gems/factory_girl/file/GETTING_STARTED.md#Inheritance))
 
-Now, passing override values to our `member` factory might get old after a while if we need to write 15 feature tests where a book club leader is required. Let's go ahead and make a permanent factory for this kind of object. We can do this by inheriting most of the properties we want from the parent `member` object:
+Our book clubs can have leaders. Passing override values to our `member` factory might get old after a while if we need to write 15 feature tests where a book club leader is required. Let's go ahead and make a permanent factory for this kind of object. We can do this by inheriting most of the properties we want from the parent `member` object:
 
 ```ruby
 factory :member do
