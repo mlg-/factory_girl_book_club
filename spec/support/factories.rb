@@ -1,22 +1,20 @@
 FactoryGirl.define do
 
-  factory :pokemon do
-    name "Bulbasaur"
-    ability "Overgrow"
-    poketype "Grass"
-    strength 25
-    age 2
-    pokemaster
+  factory :member do
+    first_name "Emily"
+    last_name "Dickinson"
+    sequence(:email) { |n| "nobody#{n}@nobodytoo.org" }
+    bio "I don't see what's so great about leaving the house."
+    favorite_book "Aurora Leigh"
+    book_club
 
-    factory :evolved_pokemon do
-      name "Ivysaur"
-      age 3
+    factory :club_leader do
+      leader true
     end
   end
 
-  factory :pokemaster do
-    name "Ash"
-    age 14
-    sequence(:email) { |n| "pokemaster#{n}@gmail.com" }
+  factory :book_club do
+    name "(Actually) Dead Poets Society"
+    location "Amherst, MA"
   end
 end

@@ -2,7 +2,7 @@
 development:
   adapter: postgresql
   encoding: unicode
-  database: pokemon_factory_development
+  database: book_club_development
   pool: 5
   username:
   password:
@@ -11,7 +11,7 @@ development:
 test:
   adapter: postgresql
   encoding: unicode
-  database: pokemon_factory_test
+  database: book_club_test
   pool: 5
   username:
   password:
