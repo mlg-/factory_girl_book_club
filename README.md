@@ -155,39 +155,9 @@ end
 
 You can override any of the attributes that your factory sets by passing in an argument to modify that attribute. In this example, we're changing the first name, last name, and bio of the factory to suit our needs. This lets us still avoid duplicating some of our work in mocking up the data needed to test things that book club members can do, but with custom values when needed.
 
-###Different Kinds of Objects (aka [Inheritance](http://www.rubydoc.info/gems/factory_girl/file/GETTING_STARTED.md#Inheritance))
-
-Our book clubs can have leaders. Passing override values to our `member` factory might get old after a while if we need to write 15 feature tests where a book club leader is required. Let's go ahead and make a permanent factory for this kind of object. We can do this by inheriting most of the properties we want from the parent `member` object:
-
-```ruby
-factory :member do
-    first_name "Emily"
-    last_name "Dickinson"
-    email "nobody@nobodytoo.org"
-    bio "I don't see what's so great about leaving the house."
-    favorite_book "Aurora Leigh"
-
-    factory :club_leader do
-      leader true
-    end
-  end
-```
-
-If we call `FactoryGirl.create(:club_leader)`, all of the default traits we set up in the normal `member` factory will still be there, *except* the one we explicitly overrode in the `book_club_leader` factory. Nesting things this way makes creating new factories for explicit uses very simple.
-
-
 ###Objects with Associations ([Documentation](http://www.rubydoc.info/gems/factory_girl/file/GETTING_STARTED.md#Associations))
 
-Let's say we now have an `Book Club` class as well as Member, and there's a one-to-many relationship between them: an Book Club has many Members, and a Member belongs to a Book Club.
-
-- New migration for active record book club object `rake db:create_migration NAME=create_book_club`
-- Create table with name and location
-- Create class in the 'app/model' directory
-- `rake db:migrate` to create the table in the db
-- Add associations: `Member` belongs to `Book Club`, `Book Club` has many members
-- Create migration to add column for belongs_to `Book Club`
-
-Usually when we create a member object, we'll know we want a book club object also. So we can add a factory for this purpose to our `factories.rb` file:
+In our set up, a `Book Club` has many `Member`s, and a `Member` belongs to a `Book Club`. Usually when we create a member object, we'll know we want a book club object also. So we can add a factory for this purpose to our `factories.rb` file:
 
 ```ruby
 factory :book_club do
@@ -211,6 +181,25 @@ end
 
 Now every time we create a new book club member, there will be a book club to go with it!
 
+Here's an example:
+
+```
+feature "view a particular book club's members" do
+  scenario "see all members of a particular book club" do
+    emily_dickinson = FactoryGirl.create(:member)
+    book_club = emily_dickinson.book_club
+    ts_eliot = FactoryGirl.create(:member, first_name: "Thomas", last_name: "Eliot", book_club: book_club)
+
+    visit "/book_clubs/#{book_club.id}"
+
+    expect(page).to have_content(book_club.name)
+    expect(page).to have_content(emily_dickinson.first_name)
+    expect(page).to have_content(ts_eliot.first_name)
+  end
+end
+
+```
+
 Or, let's say we want to add a book club member to a specific, pre-existing club. We can just overwrite this default information like before:
 
 ```
@@ -218,7 +207,45 @@ book_club = FactoryGirl.create(:book_club, name: "Cranky Poet's Society")
 emily_dickinson = FactoryGirl.create(:member, book_club: book_club)
 ```
 
-Now Emily will belong to the book club we already created.
+Now Emily will belong to the book club we already created, and the factory won't create a new book club when it creates her membership.
+
+###Different Kinds of Objects (aka [Inheritance](http://www.rubydoc.info/gems/factory_girl/file/GETTING_STARTED.md#Inheritance))
+
+Our book clubs can have leaders. Passing override values to our `member` factory might get old after a while if we need to write 15 feature tests where a book club leader is required. Let's go ahead and make a permanent factory for this kind of object. We can do this by inheriting most of the properties we want from the parent `member` object:
+
+```ruby
+factory :member do
+    first_name "Emily"
+    last_name "Dickinson"
+    email "nobody@nobodytoo.org"
+    bio "I don't see what's so great about leaving the house."
+    favorite_book "Aurora Leigh"
+
+    factory :club_leader do
+      leader true
+    end
+  end
+```
+
+If we call `FactoryGirl.create(:club_leader)`, all of the default traits we set up in the normal `member` factory will still be there, *except* the one we explicitly overrode in the `book_club_leader` factory. Nesting things this way makes creating new factories for explicit uses very simple.
+
+Let's update our previous feature test to leverage this improved factory set up:
+
+```
+feature "view a particular book club's members" do
+  scenario "see all members of a particular book club" do
+    book_club = FactoryGirl.create(:book_club)
+    emily_dickinson = FactoryGirl.create(:club_leader, book_club: book_club)
+    ts_eliot = FactoryGirl.create(:member, first_name: "Thomas", last_name: "Eliot", book_club: book_club)
+
+    visit "/book_clubs/#{book_club.id}"
+
+    expect(page).to have_content("#{emily_dickinson.first_name} (Leader)")
+    expect(page).to have_content(ts_eliot.first_name)
+  end
+end
+
+```
 
 ##Fancier Factories
 
@@ -261,24 +288,28 @@ factory :member do
 end
 ```
 
-Let's add a feature test and we can display our book club members and their emails:
+Let's run the feature test we wrote before to make sure this is working as expected:
 
 ```ruby
-feature 'book club members directory' do
-  scenario "view list of book club members" do
-    emily = FactoryGirl.create(:member)
+feature "book club member directory" do
+  scenario "view list of all book club members" do
+    emily_dickinson = FactoryGirl.create(:member)
+    walt_whitman = FactoryGirl.create(:member,first_name: "Walt", last_name: "Whitman", bio: "Yawp")
+
     visit '/members'
 
-    expect(page).to have_content("Book Club Members Directory")
-    expect(page).to have_content (emily.first_name)
-    expect(page).to have_content (emily.email)
+    expect(page).to have_content("All Book Club Members")
+    expect(page).to have_content(emily_dickinson.first_name)
+    expect(page).to have_content(emily_dickinson.email)
+    expect(page).to have_content(walt_whitman.first_name)
+    expect(page).to have_content(walt_whitman.email)
   end
 end
 ```
 
 ###[Lists](https://github.com/thoughtbot/factory_girl/blob/master/GETTING_STARTED.md#building-or-creating-multiple-records) of Objects
 
-Now, let's say we want to write a relatively realistic tests, wherein our book club has 15 members, 3 of whom are club leaders. Factory Girl can help us do this pretty easily with `create_list`. Here's how it might look:
+Now, so far our book club tests have only had a couple of members, but maybe we want to test a more realistic scenario wherein our book club has 15 members, 3 of whom are club leaders. Factory Girl can help us do this pretty easily with `create_list`. Here's how it might look:
 
 ```
 feature "view a book club's members" do
