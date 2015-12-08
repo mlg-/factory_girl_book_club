@@ -126,8 +126,8 @@ feature 'book club member directory' do
     visit '/members'
 
     expect(page).to have_content("All Book Club Members")
-    expect(page).to have_content emily_dickinson.first_name
-    expect(page).to have_content emily_dickinson.email
+    expect(page).to have_content(emily_dickinson.first_name)
+    expect(page).to have_content(emily_dickinson.email)
   end
 end
 ```
@@ -153,7 +153,7 @@ feature "book club member directory" do
 end
 ```
 
-You can override any of the attributes that your factory sets by passing in an argument to modify that attribute. In this example, we're changing the first name, last name, and bio of the factory to suit our needs. This lets us still avoid duplicating some of our work in mocking up the data needed to test things that book club members can do, but with custom values when needed.
+You can override any of the attributes that your factory sets by passing in an argument to modify that attribute. In this example, we're changing the first name, last name, and bio of the factory to suit our needs. This allows us to avoid duplicating some of our work in mocking up the data needed to test things that book club members can do, but with custom values when needed.
 
 ###Objects with Associations ([Documentation](http://www.rubydoc.info/gems/factory_girl/file/GETTING_STARTED.md#Associations))
 
