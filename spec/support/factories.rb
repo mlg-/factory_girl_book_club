@@ -1,7 +1,6 @@
 FactoryGirl.define do
-
   factory :member do
-    first_name "Emily"
+    sequence(:first_name) { |n| "Emily #{n}" }
     last_name "Dickinson"
     sequence(:email) { |n| "nobody#{n}@nobodytoo.org" }
     bio "I don't see what's so great about leaving the house."

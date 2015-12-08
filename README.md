@@ -211,7 +211,7 @@ Now Emily will belong to the book club we already created, and the factory won't
 
 ###Different Kinds of Objects (aka [Inheritance](http://www.rubydoc.info/gems/factory_girl/file/GETTING_STARTED.md#Inheritance))
 
-Our book clubs can have leaders. Passing override values to our `member` factory might get old after a while if we need to write 15 feature tests where a book club leader is required. Let's go ahead and make a permanent factory for this kind of object. We can do this by inheriting most of the properties we want from the parent `member` object:
+Let's say when our book club members sign up, they can either check a box to offer to lead their book club during its meetings or not. Passing override values to our `member` factory might get old after a while if we need to write 15 feature tests where a book club leader is required. Let's go ahead and make a permanent factory for this kind of object. We can do this by inheriting most of the properties we want from the parent `member` object:
 
 ```ruby
 factory :member do
