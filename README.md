@@ -3,7 +3,7 @@
 FactoryGirl is a gem that makes testing easier. It allows you to create "factories" for the objects your app is concerned with, thereby allowing you to more quickly set up tests for a feature or method. Once FactoryGirl is set up, instead of needing to type this:
 
 ```
-let(:leader) { Member.new("Emily", "Dickinson", "nobody@nobodytoo.org", "I don't see what's so great about leaving the house.", "Aurora Leigh", true) }
+let(:leader) { Member.create(first_name: "Emily", last_name: "Dickinson", email: "nobody@nobodytoo.org", bio: "I don't see what's so great about leaving the house.", favorite_book: "Aurora Leigh", leader: true) }
 ```
 
 I can use something more simple, like this:
