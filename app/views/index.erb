@@ -1,0 +1,6 @@
+<h1>All Book Club Members</h1>
+<ul>
+  <% @members.each do |member| %>
+    <li><%= member.first_name %> <%= member.last_name %></li>
+  <% end %>
+</ul>

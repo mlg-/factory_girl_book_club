@@ -11,9 +11,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 20160315200132) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "book_clubs", force: :cascade do |t|
+    t.string "name",     null: false
+    t.string "location"
+  end
+
+  create_table "members", force: :cascade do |t|
+    t.string  "first_name",                    null: false
+    t.string  "last_name",                     null: false
+    t.string  "email",                         null: false
+    t.text    "bio"
+    t.string  "favorite_book"
+    t.integer "book_club_id"
+    t.boolean "leader",        default: false, null: false
+  end
 
 end

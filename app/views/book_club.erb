@@ -1,0 +1,7 @@
+<h1><%= @book_club.name %></h1>
+
+<p><%= @leader.first_name %> <%= @leader.last_name %>, Leader</p>
+
+<% @book_club_members.each do |member| %>
+  <%= member.first_name %> <%= member.email %>
+<% end %>
